@@ -17,7 +17,7 @@ function AddProductForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/createmenu", formData);
+      const response = await axios.post("https://fullrestaurantweb.onrender.com/createmenu", formData);
       alert("Product added successfully!");
       setFormData({ Name: "", price: "", category: "", image: "" }); // reset form
     } catch (error) {
