@@ -5,27 +5,32 @@ import axios from "axios";
 function OrdersTable() {
   const [orders, setOrders] = useState([]);
 
-  // Fetch orders from backend
-  const getOrders = () => {
-    axios
-      .get("http://localhost:3000/getOrder")
-      .then((res) => setOrders(res.data))
-      .catch((err) => console.log(err));
+  // ✅ Render backend URL
+  const BASE_URL = "https://fullrestaurantweb.onrender.com";
+
+  // Fetch all orders
+  const getOrders = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/getOrder`);
+      setOrders(res.data);
+    } catch (err) {
+      console.error("Error fetching orders:", err);
+    }
+  };
+
+  // Delete order
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}/removeOrder/${id}`);
+      setOrders(orders.filter((order) => order._id !== id));
+    } catch (err) {
+      console.error("Error deleting order:", err);
+    }
   };
 
   useEffect(() => {
     getOrders();
   }, []);
-
-  // Delete order
-  const handleDelete = (id) => {
-    axios
-      .delete(`http://localhost:3000/removeOrder/${id}`)
-      .then(() => {
-        setOrders(orders.filter((order) => order._id !== id));
-      })
-      .catch((err) => console.log(err));
-  };
 
   return (
     <div className="flex">
@@ -59,10 +64,7 @@ function OrdersTable() {
               <div className="mt-3">
                 <h3 className="font-semibold mb-1">Items:</h3>
                 {order.items.map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex justify-between border-b py-1"
-                  >
+                  <div key={i} className="flex justify-between border-b py-1">
                     <span>
                       {item.Name} x {item.quantity}
                     </span>
