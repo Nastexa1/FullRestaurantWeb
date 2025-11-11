@@ -1,4 +1,4 @@
-import Sidebar from "../components/Sidebar"
+import Sidebar from "../components/Sidebar";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
@@ -6,23 +6,32 @@ import { NavLink } from "react-router-dom";
 function Product() {
   const [products, setProducts] = useState([]);
 
-  const getProducts = () => {
-    axios.get("http://localhost:3000/getmenu").then((res) => {
+  // ✅ Base URL for Render backend
+  const BASE_URL = "https://fullrestaurantweb.onrender.com";
+
+  // ✅ Fetch all products
+  const getProducts = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/getmenu`);
       setProducts(res.data);
-    });
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    }
   };
 
-  const handleDelete = (id) => {
-    axios.delete(`http://localhost:3000/removeproduct/${id}`)
-      .then((res) => {
-        alert(res.data);
-        getProducts(); // refresh products list
-      })
-      .catch((err) => console.log(err));
+  // ✅ Delete product
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${BASE_URL}/removeproduct/${id}`);
+      alert(res.data);
+      getProducts(); // Refresh product list
+    } catch (err) {
+      console.error("Error deleting product:", err);
+    }
   };
 
   useEffect(() => {
-    getProducts();  // ✅ only fetch products
+    getProducts();
   }, []);
 
   return (
@@ -39,9 +48,9 @@ function Product() {
           </h1>
           <NavLink to="/AddProductForm">
             <button className="bg-black text-white font-bold px-6 py-2 rounded shadow hover:bg-gray-800 transition">
-            Add Product
-          </button>
-            </NavLink>
+              Add Product
+            </button>
+          </NavLink>
         </div>
 
         {/* Products grid */}
@@ -59,12 +68,13 @@ function Product() {
               <h1 className="text-yellow-700 font-bold text-xl mt-2">
                 {item.Name}
               </h1>
-              <p className="text-red-500 font-extrabold">{item.price}</p>
+              <p className="text-red-500 font-extrabold">${item.price}</p>
               <p className="font-extrabold text-yellow-700">{item.category}</p>
               <div className="flex gap-3 mt-3">
-                <button 
-                  onClick={() => handleDelete(item._id)} 
-                  className="bg-red-600 text-white font-bold rounded px-4 py-2">
+                <button
+                  onClick={() => handleDelete(item._id)}
+                  className="bg-red-600 text-white font-bold rounded px-4 py-2 hover:bg-red-700 transition"
+                >
                   Delete
                 </button>
 
