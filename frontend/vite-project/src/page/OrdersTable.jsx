@@ -5,8 +5,8 @@ import axios from "axios";
 function OrdersTable() {
   const [orders, setOrders] = useState([]);
 
-  // ✅ Render backend URL
-  const BASE_URL = "https://fullrestaurantweb.onrender.com";
+  // ✅ Netlify-ready: use environment variable
+  const BASE_URL = import.meta.env.VITE_API_URL; // Set this in Netlify
 
   // Fetch all orders
   const getOrders = async () => {
@@ -66,15 +66,15 @@ function OrdersTable() {
                 {order.items.map((item, i) => (
                   <div key={i} className="flex justify-between border-b py-1">
                     <span>
-                      {item.Name} x {item.quantity}
+                      {item.Name} x {item.quantity || 1}
                     </span>
-                    <span>${item.lineTotal}</span>
+                    <span>${item.price * (item.quantity || 1)}</span>
                   </div>
                 ))}
               </div>
 
               <p className="font-bold mt-3 text-lg">
-                Total: ${order.totalAmount}
+                Total: ${ordersTotal(order.items)}
               </p>
 
               <p
@@ -97,5 +97,10 @@ function OrdersTable() {
     </div>
   );
 }
+
+// Helper function to calculate total
+const ordersTotal = (items) => {
+  return items.reduce((acc, item) => acc + item.price * (item.quantity || 1), 0);
+};
 
 export default OrdersTable;
