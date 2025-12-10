@@ -8,14 +8,16 @@ function Menu() {
   const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
 
-  // ✅ Fetch products from backend (Render)
+  // ✅ Fetch products from backend (Netlify-ready)
   useEffect(() => {
     getProducts();
   }, []);
 
   const getProducts = () => {
+    const API_URL = import.meta.env.VITE_API_URL; // environment variable
+
     axios
-      .get("https://fullrestaurantweb.onrender.com/getmenu")
+      .get(`${API_URL}/getmenu`)
       .then((res) => setProducts(res.data))
       .catch((err) => console.log("Error fetching products:", err));
   };
@@ -26,7 +28,7 @@ function Menu() {
   );
 
   return (
-    <div className="bg-yellow-50 pt-20 p-3 md:flex md:gap-5">
+    <div className="bg-yellow-50 pt-20 p-3 md:flex md:gap-5 min-h-screen">
       {/* Left side */}
       <div className="flex flex-col gap-5 md:w-72">
         {/* Categories */}
@@ -55,10 +57,7 @@ function Menu() {
           </h1>
           <div className="bg-white shadow mt-2 h-96 overflow-y-auto">
             {filteredItems.map((item) => (
-              <div
-                key={item._id}
-                className="flex items-center border-b p-3"
-              >
+              <div key={item._id} className="flex items-center border-b p-3">
                 <img
                   className="w-16 h-16 object-cover rounded"
                   src={item.image}
@@ -81,10 +80,7 @@ function Menu() {
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
           {filteredItems.map((item) => (
-            <div
-              key={item._id}
-              className="bg-white rounded shadow p-5 flex flex-col"
-            >
+            <div key={item._id} className="bg-white rounded shadow p-5 flex flex-col">
               <img
                 className="rounded w-full h-40 object-cover"
                 src={item.image}
