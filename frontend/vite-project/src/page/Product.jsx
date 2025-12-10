@@ -6,8 +6,8 @@ import { NavLink } from "react-router-dom";
 function Product() {
   const [products, setProducts] = useState([]);
 
-  // ✅ Base URL for Render backend
-  const BASE_URL = "https://fullrestaurantweb.onrender.com";
+  // ✅ Netlify-ready: use environment variable
+  const BASE_URL = import.meta.env.VITE_API_URL; // Set in Netlify
 
   // ✅ Fetch all products
   const getProducts = async () => {
@@ -23,10 +23,11 @@ function Product() {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(`${BASE_URL}/removeproduct/${id}`);
-      alert(res.data);
+      alert(res.data.message || "Product deleted successfully");
       getProducts(); // Refresh product list
     } catch (err) {
       console.error("Error deleting product:", err);
+      alert("Failed to delete product");
     }
   };
 
@@ -57,7 +58,7 @@ function Product() {
         <div className="ml-[250px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
           {products.map((item, index) => (
             <div
-              key={index}
+              key={item._id || index}
               className="bg-white shadow-md rounded-xl overflow-hidden p-4 flex flex-col"
             >
               <img
