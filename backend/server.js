@@ -5,8 +5,9 @@ const app = express();
 require("dotenv").config(); // .env support
 
 app.use(cors({
-  origin: ["https://fullrestaurant.netlify.app", "http://localhost:5173"]
+  origin: ["https://fullrestaurantweb-1front.onrender.com", "http://localhost:5173"]
 }));
+
 app.use(express.json());
 
 // MongoDB Atlas
