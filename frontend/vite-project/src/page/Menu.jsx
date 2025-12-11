@@ -4,25 +4,23 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/reducer/cartSlice";
 
 function Menu() {
-  const [selectedCategory, setSelectedCategory] = useState("food");
+  const [selectedCategory, setSelectedCategory] = useState("Fast Food"); // default category
   const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
 
-  // ✅ Fetch products from backend (Netlify-ready)
+  // ✅ Fetch products from backend (Render live)
   useEffect(() => {
-    getProducts();
-  }, []);
-
-  const getProducts = () => {
-    const API_URL = import.meta.env.VITE_API_URL; // environment variable
+    const API_URL = import.meta.env.VITE_API_URL || "https://fullrestaurantweb.onrender.com";
 
     axios
       .get(`${API_URL}/getmenu`)
       .then((res) => setProducts(res.data))
       .catch((err) => console.log("Error fetching products:", err));
-  };
+  }, []);
 
-  const categories = ["food", "drink", "coffee", "tea", "desserts"];
+  // Unique categories from products
+  const categories = [...new Set(products.map((item) => item.category))];
+
   const filteredItems = products.filter(
     (item) => item.category === selectedCategory
   );
@@ -44,7 +42,7 @@ function Menu() {
                 className={`px-5 rounded font-bold mb-2 w-full text-left hover:text-yellow-400 
                   ${selectedCategory === cat ? "text-yellow-500" : ""}`}
               >
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                {cat}
               </button>
             ))}
           </div>
