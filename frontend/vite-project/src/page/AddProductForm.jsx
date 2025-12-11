@@ -7,7 +7,7 @@ function AddProductForm() {
     Name: "",
     price: "",
     category: "",
-    image: ""
+    image: "",
   });
 
   const handleChange = (e) => {
@@ -17,14 +17,14 @@ function AddProductForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Isticmaal environment variable Netlify
-      const API_URL = import.meta.env.VITE_API_URL;
+      // Environment variable ama fallback URL
+      const API_URL = import.meta.env.VITE_API_URL || "https://fullrestaurantweb.onrender.com";
 
       const response = await axios.post(`${API_URL}/createmenu`, formData);
       alert("Product added successfully!");
       setFormData({ Name: "", price: "", category: "", image: "" });
     } catch (error) {
-      console.error(error);
+      console.error("Error adding product:", error);
       alert("Failed to add product");
     }
   };
