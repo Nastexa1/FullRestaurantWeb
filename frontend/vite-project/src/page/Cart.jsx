@@ -16,8 +16,8 @@ function Cart() {
     if (!address || !phone) return alert("Please enter address and phone");
 
     try {
-      // Isticmaal environment variable Netlify
-      const API_URL = import.meta.env.VITE_API_URL;
+      // Use environment variable or fallback
+      const API_URL = import.meta.env.VITE_API_URL || "https://fullrestaurantweb.onrender.com";
 
       await axios.post(`${API_URL}/createOrder`, {
         items: cart,
@@ -28,16 +28,16 @@ function Cart() {
       });
 
       alert("Order created successfully!");
-      // Optional: reset cart or form
+
+      // Reset form & optional cart clear
       setAddress("");
       setPhone("");
       setPaymentMethod("COD");
       setPaymentProvider("EVC");
-      // Optional: dispatch clear cart if you have it
-      // dispatch(clearCart());
+      // dispatch(clearCart()); // Uncomment if you have a clearCart action
     } catch (err) {
-      console.error(err);
-      alert("Error creating order");
+      console.error("Error creating order:", err);
+      alert("Failed to create order");
     }
   };
 
@@ -53,32 +53,36 @@ function Cart() {
         <h1 className="text-yellow-600 font-bold text-2xl border-b-2 mt-20 border-b-gray-300 w-[300px]">
           CartPage
         </h1>
-        {cart.map((item) => (
-          <div
-            key={item._id}
-            className="bg-white shadow-md w-full md:w-[600px] flex flex-col md:flex-row mt-3 p-3 rounded-lg"
-          >
-            <img
-              className="w-full md:w-[200px] rounded-lg"
-              src={item.image}
-              alt={item.Name}
-            />
-            <div className="md:ml-5 mt-3 md:mt-0">
-              <h1 className="text-2xl">{item.Name}</h1>
-              <p className="text-red-500 font-bold">${item.price}</p>
-              <p className="font-bold">Quantity: {item.quantity || 1}</p>
-              <p className="font-bold">
-                Line Total: ${item.price * (item.quantity || 1)}
-              </p>
-              <button
-                onClick={() => dispatch(removeFromCart(item._id))}
-                className="text-white font-bold mt-3 bg-red-600 px-6 py-1 rounded-lg"
-              >
-                Delete
-              </button>
+        {cart.length === 0 ? (
+          <p className="mt-5 font-bold text-gray-500">Your cart is empty</p>
+        ) : (
+          cart.map((item) => (
+            <div
+              key={item._id}
+              className="bg-white shadow-md w-full md:w-[600px] flex flex-col md:flex-row mt-3 p-3 rounded-lg"
+            >
+              <img
+                className="w-full md:w-[200px] rounded-lg"
+                src={item.image}
+                alt={item.Name}
+              />
+              <div className="md:ml-5 mt-3 md:mt-0">
+                <h1 className="text-2xl">{item.Name}</h1>
+                <p className="text-red-500 font-bold">${item.price}</p>
+                <p className="font-bold">Quantity: {item.quantity || 1}</p>
+                <p className="font-bold">
+                  Line Total: ${item.price * (item.quantity || 1)}
+                </p>
+                <button
+                  onClick={() => dispatch(removeFromCart(item._id))}
+                  className="text-white font-bold mt-3 bg-red-600 px-6 py-1 rounded-lg"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Order Summary */}
